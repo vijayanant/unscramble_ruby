@@ -3,12 +3,13 @@ require 'tree'
 class Unscrambler 
 
   def initialize
-    @l = []
+    @root = Tree::TreeNode.new ('a', [])
   end
 
 
   def add s
-    @l << s
+    s.sort!
+    
   end
 
   def get s
