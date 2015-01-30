@@ -6,11 +6,10 @@ module VJTree
     include Enumerable
     include Comparable
 
-
-    attr_reader :key
+    attr_reader   :key
+    attr_reader   :parent
     attr_accessor :name
     attr_accessor :value
-    attr_reader :parent
 
     def initialize(key, name, value=nil)
       @key, @name, @value = key, name, value
@@ -22,29 +21,28 @@ module VJTree
         x = self
         x = x.parent until x.is_root?
         x
-      end
-  
+    end
+
     def is_root?
       @parent.nil?
     end
-  
+
     def has_value?
       @value != nil
     end
-  
+
     def is_leaf?
       !has_children?
     end
-  
+
     def has_children?
       @children_hash.size != 0
     end
-  
+
     def node_copy
       VJTree::VJNode.new(@key, @name, @value ? @value.clone : nil)
     end
-  
-  
+
     def to_s
       "Key: #{@key}," +
       " Name: #{@name}," +
@@ -54,11 +52,11 @@ module VJTree
       #" Total Nodes: #{size()}" + 
       "."
     end
-  
+
     def <<(child)
       add(child)
     end
-  
+
     def add(child, at_index = -1)
       raise ArgumentError, "Attempting to add a nil node" unless child 
       child.parent.remove! child if child.parent # Detach from the old parent
@@ -66,20 +64,19 @@ module VJTree
       child.parent = self
       child
     end
-  
+
     def remove!(child)
       return nil unless child
       @children_hash.delete(child.name)
       child.make_me_root!
       child
     end
-  
+
     def [](name)
         raise ArgumentError, "Name needs to be provided!" if name == nil
         @children_hash[name]
     end
-  
-  
+
     def each(&block)             # :yields: node
       return self.to_enum unless block_given?
       node_stack = [self]   # Start with this node
@@ -94,7 +91,6 @@ module VJTree
       return self if block_given?
     end
 
-
     def children
       if block_given?
         @children_hash.each {|child| yield child}
@@ -107,9 +103,9 @@ module VJTree
     def parent=(parent)
       @parent = parent
     end
-   
+
     protected :parent=
-  
+
     def make_me_root!
       self.parent = nil
     end
